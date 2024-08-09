@@ -1,6 +1,6 @@
 
 import logging
-import qvncwidget.rfbconstants as c
+from . import rfbconstants as c
 
 from PySide6.QtGui import QMouseEvent
 from PySide6.QtCore import Qt

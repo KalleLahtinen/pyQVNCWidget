@@ -33,8 +33,8 @@ from PySide6.QtWidgets import (
 
 from PySide6.QtOpenGLWidgets import QOpenGLWidget
 
-from qvncwidget.rfb import RFBClient
-from qvncwidget.rfbhelpers import RFBPixelformat, RFBInput
+from .rfb import RFBClient
+from .rfbhelpers import RFBPixelformat, RFBInput
 
 log = logging.getLogger("QVNCWidget")
 

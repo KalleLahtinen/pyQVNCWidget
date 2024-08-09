@@ -9,10 +9,10 @@ References:
 - https://github.com/rfbproto/rfbproto/blob/master/rfbproto.rst
 """
 
-from qvncwidget.rfbhelpers import RFBPixelformat, RFBRectangle
-from qvncwidget.rfbdes import RFBDes
-import qvncwidget.rfbconstants as c
-import qvncwidget.easystruct as es
+from .rfbhelpers import RFBPixelformat, RFBRectangle
+from .rfbdes import RFBDes
+from . import rfbconstants as c
+from . import easystruct as es
 
 from threading import Thread
 import logging
