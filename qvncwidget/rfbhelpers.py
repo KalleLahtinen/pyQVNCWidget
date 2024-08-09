@@ -2,8 +2,8 @@
 import logging
 import qvncwidget.rfbconstants as c
 
-from PyQt5.QtGui import QMouseEvent
-from PyQt5.QtCore import Qt
+from PySide6.QtGui import QMouseEvent
+from PySide6.QtCore import Qt
 
 class RFBPixelformat:
     def __init__(self,
@@ -74,9 +74,9 @@ class RFBInput:
 
     # thanks to ken3 (https://github.com/ken3) for this
     MOUSE_MAPPING = {
-        Qt.LeftButton: 1 << 0,
-        Qt.MidButton: 1 << 1,
-        Qt.RightButton: 1 << 2,
+        Qt.MouseButton.LeftButton: 1 << 0,
+        Qt.MouseButton.MiddleButton: 1 << 1,
+        Qt.MouseButton.RightButton: 1 << 2,
     }
 
     @staticmethod

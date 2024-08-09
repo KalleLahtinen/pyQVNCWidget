@@ -3,10 +3,9 @@
 import sys
 import logging
 
-from PyQt5.QtWidgets import QApplication, QMainWindow
-from PyQt5.QtGui import QKeyEvent
-#from qvncwidget import QVNCWidget
-from qvncwidget.qvncwidget import QVNCWidget, QVNCWidgetGL
+from PySide6.QtWidgets import QApplication, QMainWindow
+from PySide6.QtGui import QKeyEvent
+from qvncwidget.qvncwidget import QVNCWidget
 
 log = logging.getLogger("testing")
 
@@ -20,7 +19,6 @@ class Window(QMainWindow):
     def initUI(self):
         self.setWindowTitle("QVNCWidget")
 
-        #self.vnc = QVNCWidgetGL(
         self.vnc = QVNCWidget(
             parent=self,
             host="127.0.0.1", port=5900,

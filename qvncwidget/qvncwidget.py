@@ -8,13 +8,13 @@ licensed under GPLv3
 import logging
 import time
 
-from PyQt5.QtCore import (
+from PySide6.QtCore import (
     QSize,
     Qt,
-    pyqtSignal,
+    Signal as pyqtSignal,
     QSemaphore
 )
-from PyQt5.QtGui import (
+from PySide6.QtGui import (
     QImage,
     QPaintEvent,
     QPainter,
@@ -26,12 +26,12 @@ from PyQt5.QtGui import (
     QMouseEvent
 )
 
-from PyQt5.QtWidgets import (
+from PySide6.QtWidgets import (
     QWidget,
-    QLabel,
-    QWidget,
-    QOpenGLWidget
+    QLabel
 )
+
+from PySide6.QtOpenGLWidgets import QOpenGLWidget
 
 from qvncwidget.rfb import RFBClient
 from qvncwidget.rfbhelpers import RFBPixelformat, RFBInput
@@ -45,10 +45,8 @@ class QVNCWidget(QWidget, RFBClient):
     def __init__(self, parent: QWidget,
                  host: str, port = 5900, password: str = None,
                  readOnly = False):
-        super().__init__(
-            parent=parent,
-            host=host, port=port, password=password
-        )
+        QWidget.__init__(self, parent)
+        RFBClient.__init__(self, host=host, port=port, password=password)
         self.readOnly = readOnly
 
         self.backbuffer: QImage = None
