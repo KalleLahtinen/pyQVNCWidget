@@ -38,15 +38,17 @@ from qvncwidget.rfbhelpers import RFBPixelformat, RFBInput
 
 log = logging.getLogger("QVNCWidget")
 
-class QVNCWidget(QWidget, RFBClient):
+class QVNCWidget(QWidget):
 
     onInitialResize = pyqtSignal(QSize)
 
     def __init__(self, parent: QWidget,
                  host: str, port = 5900, password: str = None,
                  readOnly = False):
-        QWidget.__init__(self, parent)
-        RFBClient.__init__(self, host=host, port=port, password=password)
+        
+        super().__init__(parent)
+        self.rfb_client = RFBClient(host=host, port=port, password=password)
+
         self.readOnly = readOnly
 
         self.backbuffer: QImage = None
@@ -58,10 +60,10 @@ class QVNCWidget(QWidget, RFBClient):
         self.mouseButtonMask = 0
 
     def start(self):
-        self.startConnection()
+        self.rfb_client.startConnection()
 
     def stop(self):
-        self.closeConnection()
+        self.rfb_client.closeConnection()
 
     def onConnectionMade(self):
         log.info("VNC handshake done")
