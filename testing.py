@@ -61,4 +61,4 @@ window.resize(800, 600)
 window.center()
 window.show()
 
-sys.exit(app.exec_())
+sys.exit(app.exec())

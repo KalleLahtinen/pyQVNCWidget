@@ -70,12 +70,15 @@ class RFBClient:
     _connected = False
     _requestFrameBufferUpdate = False
     _incrementalFrameBufferUpdate = True
+    _vncWidth = 0
+    _vncHeight = 0
 
-    def __init__(self, host, port = 5900,
+    def __init__(self, widget, host, port = 5900,
                 password: str = None, 
                 sharedConnection = True,
                 keepRequesting = True,
                 requestIncremental = True):
+        self.qvnc = widget
         self.host = host
         self.port = port
         self.password = password
@@ -174,7 +177,7 @@ class RFBClient:
 
     def _handleServerInit(self, data: bytes):
         try:
-            self.vncWidth, self.vncHeight, pixformat, namelen = s.unpack("!HH16sI", data)
+            self._vncWidth, self._vncHeight, pixformat, namelen = s.unpack("!HH16sI", data)
         except s.error as e:
             self.log.error("Handshake failed")
             self.__close()
@@ -187,13 +190,13 @@ class RFBClient:
         self.pixformat = RFBPixelformat(*pixformatData)
 
         self.log.debug(f"Server Pixelformat: {self.pixformat}")
-        self.log.debug(f"Resolution: {self.vncWidth}x{self.vncHeight}")
+        self.log.debug(f"Resolution: {self._vncWidth}x{self._vncHeight}")
 
         # this should not be required, but some VNC servers (like QT QPA VNC)
         # require this to send FramebufferUpdate
         self.setEncodings(SUPPORTED_ENCODINGS)
 
-        self.onConnectionMade()
+        self.qvnc.onConnectionMade()
         self._connected = True
 
         # enter main request loop
@@ -315,7 +318,7 @@ class RFBClient:
         for _ in range(numRectangles):
             self._handleRectangle(self.__recv(12))
 
-        self.onFramebufferUpdateFinished()
+        self.qvnc.onFramebufferUpdateFinished()
 
     def _handleRectangle(self, data: bytes):
         xPos, yPos, width, height, encoding = s.unpack("!HHHHI", data)
@@ -342,7 +345,7 @@ class RFBClient:
     # ------------------------------------------------------------------        
 
     def _decodeRAW(self, data: bytes, rectangle: RFBRectangle):
-        self.onRectangleUpdate(*rectangle.asTuple(), data)
+        self.qvnc.onRectangleUpdate(*rectangle.asTuple(), data)
 
     # ------------------------------------------------------------------
     ## Client -> Server messages
@@ -362,8 +365,8 @@ class RFBClient:
         xPos=0, yPos=0, width=None, height=None,
         incremental=False):
 
-        if not width: width = self.vncWidth - xPos
-        if not height: height = self.vncHeight - yPos
+        if not width: width = self._vncWidth - xPos
+        if not height: height = self._vncHeight - yPos
         inc = 1 if incremental else 0
 
         self.__send(s.pack(
