@@ -124,20 +124,20 @@ class QVNCWidget(QWidget):
     def mousePressEvent(self, ev: QMouseEvent):
         if self.readOnly or not self.frontbuffer: return
         self.mouseButtonMask = RFBInput.fromQMouseEvent(ev, True, self.mouseButtonMask)
-        self.pointerEvent(*self._getRemoteRel(ev), self.mouseButtonMask)
+        self.rfb_client.pointerEvent(*self._getRemoteRel(ev), self.mouseButtonMask)
 
     def mouseReleaseEvent(self, ev: QMouseEvent):
         if self.readOnly or not self.frontbuffer: return
         self.mouseButtonMask = RFBInput.fromQMouseEvent(ev, False, self.mouseButtonMask)
-        self.pointerEvent(*self._getRemoteRel(ev), self.mouseButtonMask)
+        self.rfb_client.pointerEvent(*self._getRemoteRel(ev), self.mouseButtonMask)
 
     def mouseMoveEvent(self, ev: QMouseEvent):
         if self.readOnly or not self.frontbuffer: return
-        self.pointerEvent(*self._getRemoteRel(ev), self.mouseButtonMask)
+        self.rfb_client.pointerEvent(*self._getRemoteRel(ev), self.mouseButtonMask)
 
     def _getRemoteRel(self, ev: QMouseEvent) -> tuple:
-        xPos = (ev.localPos().x() / self.frontbuffer.width()) * self.vncWidth
-        yPos = (ev.localPos().y() / self.frontbuffer.height()) * self.vncHeight
+        xPos = (ev.localPos().x() / self.frontbuffer.width()) * self.rfb_client._vncWidth
+        yPos = (ev.localPos().y() / self.frontbuffer.height()) * self.rfb_client._vncHeight
 
         return int(xPos), int(yPos)
 
@@ -145,8 +145,8 @@ class QVNCWidget(QWidget):
 
     def keyPressEvent(self, ev: QKeyEvent):
         if self.readOnly: return
-        self.keyEvent(RFBInput.fromQKeyEvent(ev.key(), ev.text()), down=1)
+        self.rfb_client.keyEvent(RFBInput.fromQKeyEvent(ev.key(), ev.text()), down=1)
 
     def keyReleaseEvent(self, ev: QKeyEvent):
         if self.readOnly: return
-        self.keyEvent(RFBInput.fromQKeyEvent(ev.key(), ev.text()), down=0)
+        self.rfb_client.keyEvent(RFBInput.fromQKeyEvent(ev.key(), ev.text()), down=0)
